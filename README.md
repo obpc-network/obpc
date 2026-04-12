@@ -773,3 +773,36 @@ Because of the nature of the socket-based protocols that drive monero, certain p
 Certain blockchain "features" can be considered "bugs" if misused correctly. Consequently, please consider the following:
 
 - When receiving monero, be aware that it may be locked for an arbitrary time if the sender elected to, preventing you from spending that monero until the lock time expires. You may want to hold off acting upon such a transaction until the unlock time lapses. To get a sense of that time, you can consider the remaining blocktime until unlock as seen in the `show_transfers` command.
+
+===================================================================================
+
+# OBPC - Official Blockchain Private Coin 🟢
+
+Este repositório contém o código-fonte da **OBPC (Bandeira Verde)**, um fork avançado baseado no Monero v0.18.
+
+---
+
+## 📊 Histórico de Progresso (Dossiê Técnico)
+
+### ✅ FASE 1: O Nascimento (Concluída em 12/04/2026)
+* **Ajuste de DNA**: Customização do `NETWORK_ID` e identificadores únicos.
+* **Infraestrutura Base**: Portas P2P fixadas em `19080` e RPC em `19081`.
+* **Bloco Gênese**: Gerado e validado via código.
+* **Prova de Conceito**: Mineração local estável atingindo a altura de **174 blocos**.
+* **Status do Core**: Código revertido para o padrão original de segurança Monero para garantir estabilidade P2P.
+
+### 🚀 FASE 2: Expansão da Rede (Próximo Passo)
+* [ ] Deploy do Seed Node em servidor remoto (VPS).
+* [ ] Primeira conexão P2P externa.
+* [ ] Validação do saldo acumulado na Carteira v2.
+* [ ] Configuração do repositório `obpc-docs` com manuais de usuário.
+
+---
+
+## 🛠️ Especificações Técnicas
+* **Base**: Monero v0.18 'Fluorine Fermi'.
+* **Algoritmo**: RandomX.
+* **Dificuldade**: Customizada para lançamento (Fixed 1 em modo Bootstrap).
+* **Repositórios Auxiliares**: 
+    * `obpc-assets`: Identidade visual e logos.
+    * `obpc-wallet`: Código específico da interface da carteira.

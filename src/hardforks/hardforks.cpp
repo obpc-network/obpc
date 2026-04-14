@@ -32,9 +32,8 @@
 #define MONERO_DEFAULT_LOG_CATEGORY "blockchain.hardforks"
 
 const hardfork_t mainnet_hard_forks[] = {
-  // OBPC v1.0 - Bandeira Verde
-  // Rede soberana, nasce direto na versao mais moderna do protocolo
-  { 1,  1, 0, 1744417200 },  // altura 1, abril 2025
+  { 1, 0, 0, 1744417200 },  // Bloco 0 é Versão 1
+  { 16, 1, 0, 1744417201 }, // Bloco 1 em diante é Versão 16
 };
 const size_t num_mainnet_hard_forks = sizeof(mainnet_hard_forks) / sizeof(mainnet_hard_forks[0]);
 const uint64_t mainnet_hard_fork_version_1_till = 0;

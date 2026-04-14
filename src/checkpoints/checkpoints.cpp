@@ -205,7 +205,7 @@ namespace cryptonote
     }
 
     // Checkpoint oficial do bloco gênese do OBPC
-    ADD_CHECKPOINT(0, "6c742ca46cb28155b04fa6021d90c78d2c0f36cd4ac7b9c86fc32d076ec171ec");
+    ADD_CHECKPOINT(0, "aad6d7b60abace35975a81acbea9a0608baa39885b8116da48847fd5494c8f00");
 
     return true;
   }

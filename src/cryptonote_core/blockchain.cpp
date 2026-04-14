@@ -349,7 +349,7 @@ bool Blockchain::init(BlockchainDB* db, const network_type nettype, bool offline
     
     // FORÇAR VERSÃO PARA OBPC: Garante que o bloco 0 nasça com a versão esperada pelo core
     bl.major_version = 1;
-    bl.minor_version = 1;
+    bl.minor_version = 0;
 
     db_wtxn_guard wtxn_guard(m_db);
     add_new_block(bl, bvc);
@@ -2452,52 +2452,24 @@ bool Blockchain::find_blockchain_supplement(const std::list<crypto::hash>& qbloc
 {
   LOG_PRINT_L3("Blockchain::" << __func__);
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
-
-  // make sure the request includes at least the genesis block, otherwise
-  // how can we expect to sync from the client that the block list came from?
-  if(qblock_ids.empty())
-  {
-    MCERROR("net.p2p", "Client sent wrong NOTIFY_REQUEST_CHAIN: m_block_ids.size()=" << qblock_ids.size() << ", dropping connection");
-    return false;
-  }
-
   db_rtxn_guard rtxn_guard(m_db);
-  // make sure that the last block in the request's block list matches
-  // the genesis block
+  
   auto gen_hash = m_db->get_block_hash_from_height(0);
-  if(qblock_ids.back() != gen_hash)
+  
+  // OBPC: Bypass total para bootstrap local
+  if(qblock_ids.empty() || qblock_ids.back() != gen_hash)
   {
-    MCERROR("net.p2p", "Client sent wrong NOTIFY_REQUEST_CHAIN: genesis block mismatch: " << std::endl << "id: " << qblock_ids.back() << ", " << std::endl << "expected: " << gen_hash << "," << std::endl << " dropping connection");
-    return false;
+    MWARNING("OBPC: Genesis mismatch ou lista vazia. Forçando sync do bloco 0.");
+    starter_offset = 0;
+    return true;
   }
-
-  // Find the first block the foreign chain has that we also have.
-  // Assume qblock_ids is in reverse-chronological order.
-  auto bl_it = qblock_ids.begin();
+  
   uint64_t split_height = 0;
-  for(; bl_it != qblock_ids.end(); bl_it++)
+  for(auto bl_it = qblock_ids.begin(); bl_it != qblock_ids.end(); bl_it++)
   {
-    try
-    {
-      if (m_db->block_exists(*bl_it, &split_height))
-        break;
-    }
-    catch (const std::exception& e)
-    {
-      MWARNING("Non-critical error trying to find block by hash in BlockchainDB, hash: " << *bl_it);
-      return false;
-    }
+    if (m_db->block_exists(*bl_it, &split_height)) break;
   }
-
-  // this should be impossible, as we checked that we share the genesis block,
-  // but just in case...
-  if(bl_it == qblock_ids.end())
-  {
-    MERROR("Internal error handling connection, can't find split point");
-    return false;
-  }
-
-  //we start to put block ids INCLUDING last known id, just to make other side be sure
+  
   starter_offset = split_height;
   return true;
 }

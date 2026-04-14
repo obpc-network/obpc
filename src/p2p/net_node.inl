@@ -408,7 +408,7 @@ namespace nodetool
     if(!address.is_blockable())
       return false;
 
-    CRITICAL_REGION_LOCAL(m_host_fails_score_lock);
+    /* CRITICAL_REGION_LOCAL(m_host_fails_score_lock);
     uint64_t fails = m_host_fails_score[address.host_str()] += score;
     MDEBUG("Host " << address.host_str() << " fail score=" << fails);
     if(fails > P2P_IP_FAILS_BEFORE_BLOCK)
@@ -417,7 +417,10 @@ namespace nodetool
       CHECK_AND_ASSERT_MES(it != m_host_fails_score.end(), false, "internal error");
       it->second = P2P_IP_FAILS_BEFORE_BLOCK/2;
       block_host(address);
-    }
+    } */
+
+     MDEBUG("OBPC bootstrap: ignorando fail score para " << address.host_str() 
+         << " (score=" << score << ")");
     return true;
   }
   //-----------------------------------------------------------------------------------
@@ -1333,12 +1336,16 @@ namespace nodetool
     bool used = false;
     server->second.m_net_server.get_config_object().foreach_connection([&, is_public](const p2p_connection_context& cntxt)
     {
-      if((is_public && cntxt.peer_id == peer.id && peer.adr.is_same_host(cntxt.m_remote_address)) || (!cntxt.m_is_income && peer.adr == cntxt.m_remote_address))
-      {
-        used = true;
-        return false;//stop enumerating
+      try { // Abre o monitoramento aqui
+        if((is_public && cntxt.peer_id == peer.id && peer.adr.is_same_host(cntxt.m_remote_address)) || (!cntxt.m_is_income && peer.adr == cntxt.m_remote_address))
+        {
+          used = true;
+          return false; // Para a enumeração se achar o peer
+        }
+      } catch (const boost::bad_weak_ptr&) { 
+        return true; // Se o ponteiro "morreu", ignora e pula para o próximo peer
       }
-      return true;
+      return true; // Continua procurando
     });
     return used;
   }
@@ -1358,12 +1365,16 @@ namespace nodetool
     bool used = false;
     server->second.m_net_server.get_config_object().foreach_connection([&, is_public](const p2p_connection_context& cntxt)
     {
-      if((is_public && cntxt.peer_id == peer.id && peer.adr.is_same_host(cntxt.m_remote_address)) || (!cntxt.m_is_income && peer.adr == cntxt.m_remote_address))
-      {
-        used = true;
-        return false;//stop enumerating
+      try { // Abre o monitoramento aqui
+        if((is_public && cntxt.peer_id == peer.id && peer.adr.is_same_host(cntxt.m_remote_address)) || (!cntxt.m_is_income && peer.adr == cntxt.m_remote_address))
+        {
+          used = true;
+          return false; // Para a enumeração se achar o peer
+        }
+      } catch (const boost::bad_weak_ptr&) { 
+        return true; // Se o ponteiro "morreu", ignora e pula para o próximo peer
       }
-      return true;
+      return true; // Continua procurando
     });
     return used;
   }

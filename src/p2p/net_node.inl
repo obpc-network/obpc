@@ -752,12 +752,8 @@ namespace nodetool
     }
     else
     {
-      full_addrs.insert("176.9.0.187:18080");
-      full_addrs.insert("88.198.163.90:18080");
-      full_addrs.insert("192.99.8.110:18080");
-      full_addrs.insert("37.187.74.171:18080");
-      full_addrs.insert("88.99.195.15:18080");
-      full_addrs.insert("5.104.84.64:18080");
+      full_addrs.insert("18.220.198.46:19080");
+      full_addrs.insert("20.106.196.92:19080");
     }
     return full_addrs;
   }
@@ -769,19 +765,14 @@ namespace nodetool
     {
       return {};
     }
-    if (m_nettype == cryptonote::TESTNET)
+    std::vector<std::string> m_seed_nodes_list = {
+      "seed1.obpc.community",
+      "seed2.obpc.community"
+    };
+
+    if (m_offline)
     {
-      return get_ip_seed_nodes();
-    }
-    if (m_nettype == cryptonote::STAGENET)
-    {
-      return get_ip_seed_nodes();
-    }
-    if (!m_enable_dns_seed_nodes)
-    {
-      // TODO: a domain can be set through socks, so that the remote side does the lookup for the DNS seed nodes.
-      m_fallback_seed_nodes_added.test_and_set();
-      return get_ip_seed_nodes();
+      return {};
     }
 
     std::set<std::string> full_addrs;

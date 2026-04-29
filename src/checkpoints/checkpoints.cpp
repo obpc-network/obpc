@@ -204,8 +204,14 @@ namespace cryptonote
       return true;
     }
 
-    // Checkpoint oficial do bloco gênese do OBPC
+    // Checkpoint oficial do bloco gênese ou inicial do OBPC
     ADD_CHECKPOINT(980, "4744ed891bd7925d2ad82a935722dbaf4711d8d0a67672215267e74c78607e96");
+
+    // Novo checkpoint de consolidação da Mainnet Soberana
+    ADD_CHECKPOINT(10593, "334b6b663039ebc848463349a5308eb858ca46db0799591f24fb75eb5f80c887");
+
+    // Checkpoint de transição para a era obpccommunity.me (Bloco atual)
+    ADD_CHECKPOINT(10601, "1be9066752ab01cdd7067412b1e9e0c132bada4e0c8a5bb6887cbc0ec9e3b562");
 
     return true;
   }

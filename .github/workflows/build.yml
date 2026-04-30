@@ -1,4 +1,4 @@
-name: OBPC Soberano - Linux Build
+name: IAXAUUSD - SOBERANIA TOTAL
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 jobs:
   # Único Job: Build para Linux no seu Notebook Acer
   build-linux:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
         with:

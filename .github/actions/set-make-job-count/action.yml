@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-linux:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
         with:

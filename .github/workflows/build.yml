@@ -2,13 +2,13 @@ name: IAXAUUSD - SOBERANIA TOTAL
 
 on:
   push:
-    branches: [ "master", "develop" ]
+    branches: [ "master", "develop" ] # Agora observa as duas
     tags: [ 'v*' ]
 
 jobs:
   # Único Job: Build para Linux no seu Notebook Acer
   build-linux:
-    runs-on: self-hosted
+    runs-on: [self-hosted, linux-build]
     steps:
       - uses: actions/checkout@v4
         with:

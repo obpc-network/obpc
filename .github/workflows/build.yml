@@ -1,31 +1,4 @@
-name: OBPC Build CI
-
-on:
-  push:
-    tags:
-      - 'v*'
-
-jobs:
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential cmake pkg-config libboost-all-dev libssl-dev libzmq3-dev libunbound-dev libreadline-dev liblibsodium-dev libhidapi-dev libusb-1.0-0-dev libudev-dev libunwind-dev
-
-      - name: Build OBPC
-        run: |
-          make -j$(nproc)
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: build/bin/monerod
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# De:
+runs-on: ubuntu-latest
+# Para:
+runs-on: self-hosted

@@ -1,12 +1,11 @@
-name: IAXAUUSD - SOBERANIA TOTAL
+name: OBPC - Build
 
 on:
   push:
-    branches: [ "master", "develop" ] # Agora observa as duas
+    branches: [ "master", "develop" ]
     tags: [ 'v*' ]
 
 jobs:
-  # Único Job: Build para Linux no seu Notebook Acer
   build-linux:
     runs-on: [self-hosted, linux-build]
     steps:

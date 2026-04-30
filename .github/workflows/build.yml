@@ -1,4 +1,4 @@
-name: OBPC Multi-Platform Build
+name: OBPC Soberano - Linux Build
 
 on:
   push:
@@ -6,56 +6,22 @@ on:
     tags: [ 'v*' ]
 
 jobs:
-  # 1. Build para Linux (No seu Notebook Acer - Ultra Rápido)
+  # Único Job: Build para Linux no seu Notebook Acer
   build-linux:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Build Linux
+
+      - name: Build OBPC
         run: |
           mkdir -p build && cd build
           cmake ..
           make -j$(nproc)
-      - name: Upload Linux Bin
-        uses: actions/upload-artifact@v4
-        with:
-          name: obpc-linux
-          path: build/bin/monerod
 
-  # 2. Build para Windows (Na Nuvem do GitHub - Evita configurar MingW local)
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - name: Build Windows
-        run: |
-          mkdir build; cd build
-          cmake .. -G "Visual Studio 17 2022"
-          cmake --build . --config Release
-      - name: Upload Windows Bin
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: obpc-windows
-          path: build/bin/Release/monerod.exe
-
-  # 3. Build para macOS (Na Nuvem do GitHub - Onde já tem o SDK da Apple)
-  build-macos:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - name: Build macOS
-        run: |
-          mkdir build && cd build
-          cmake ..
-          make -j$(sysctl -n hw.ncpu)
-      - name: Upload macOS Bin
-        uses: actions/upload-artifact@v4
-        with:
-          name: obpc-macos
-          path: build/bin/monerod# Build Soberano v1.0.3
+          name: obpc-linux-binaries
+          path: build/bin/

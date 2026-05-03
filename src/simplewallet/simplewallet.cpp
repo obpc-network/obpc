@@ -6608,6 +6608,53 @@ bool simple_wallet::transfer_main(const std::vector<std::string> &args_, bool ca
     dsts.push_back(de);
   }
 
+  // --- INÍCIO DA TRAVA DE SEGURANÇA (Clipboard Hijack Protection) ---
+{
+  PAUSE_READLINE();
+  for (const auto& de : dsts)
+  {
+    // Pula saídas de troco (destino é o próprio wallet)
+    if (de.addr == m_wallet->get_account().get_keys().m_account_address)
+      continue;
+
+    const std::string addr_str = cryptonote::get_account_address_as_str(
+      m_wallet->nettype(),
+      de.is_subaddress,
+      de.addr
+    );
+
+    // Mostra prefixo (6 chars) + sufixo (4 chars) para verificação
+    const std::string prefix = addr_str.substr(0, 6);
+    const std::string suffix = addr_str.substr(addr_str.length() - 4);
+    const std::string expected = prefix + suffix;
+
+    message_writer(console_color_red, true)
+      << "\n[BLOQUEIO DE SEGURANÇA] Verificação anti-clipboard-hijack";
+    message_writer() << "Endereço completo: " << addr_str;
+    message_writer() << "Amount: " << print_money(de.amount);
+    message_writer()
+      << "Digite os primeiros 6 + últimos 4 caracteres ("
+      << prefix << "..." << suffix << "): ";
+
+    const std::string confirm_input = input_line("");
+
+    if (std::cin.eof())
+      return false;
+
+    if (confirm_input != expected)
+    {
+      fail_msg_writer()
+        << "ERRO: Caracteres não conferem! "
+        << "Esperado: [" << expected << "] "
+        << "Recebido: [" << confirm_input << "]. "
+        << "Operação abortada por segurança.";
+      return false;
+    }
+    success_msg_writer() << "[OK] Endereço validado. Continuando...";
+  }
+}
+// --- FIM DA TRAVA DE SEGURANÇA ---
+
   if (subtract_fee_from_all)
   {
     subtract_fee_from_outputs.clear();
